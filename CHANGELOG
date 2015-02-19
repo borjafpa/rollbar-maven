@@ -1,0 +1,5 @@
+v0.1.0
+------
+release 19 February 2015
+
+- Initialize project with notifier directly or through log4 configuration
