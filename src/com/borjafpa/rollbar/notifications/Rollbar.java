@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar;
+package com.borjafpa.rollbar.notifications;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
 

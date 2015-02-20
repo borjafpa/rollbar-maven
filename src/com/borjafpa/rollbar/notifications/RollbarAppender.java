@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar;
+package com.borjafpa.rollbar.notifications;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -12,6 +12,9 @@ import org.apache.log4j.Priority;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
+
+import com.borjafpa.rollbar.util.AppConfiguration;
+import com.borjafpa.rollbar.util.AppConfigurationKey;
 
 public class RollbarAppender extends AppenderSkeleton {
 
@@ -28,7 +31,7 @@ public class RollbarAppender extends AppenderSkeleton {
 
     private String apiKey;
     private String env;
-    private String url = "https://api.rollbar.com/api/1/item/";
+    private String url = AppConfiguration.get(AppConfigurationKey.API_URL.name());
 
     @Override
     protected void append(final LoggingEvent event) {

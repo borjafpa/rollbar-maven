@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar;
+package com.borjafpa.rollbar.notifications;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,9 +15,9 @@ import org.json.simple.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.borjafpa.rollbar.NotifyBuilder;
-import com.borjafpa.rollbar.RollbarNotifier;
-import com.borjafpa.rollbar.RollbarParameter;
+import com.borjafpa.rollbar.notifications.NotifyBuilder;
+import com.borjafpa.rollbar.notifications.RollbarNotifier;
+import com.borjafpa.rollbar.notifications.RollbarParameter;
 
 public class NotifyBuilderTest {
     

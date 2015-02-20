@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar;
+package com.borjafpa.rollbar.http;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar;
+package com.borjafpa.rollbar.notifications;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
@@ -17,7 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.borjafpa.rollbar.RollbarNotifier;
+import com.borjafpa.rollbar.notifications.RollbarNotifier;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RollbarNotifier.class})

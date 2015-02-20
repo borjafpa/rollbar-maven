@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar;
+package com.borjafpa.rollbar.notifications;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.helpers.LogLog;
 import org.json.simple.JSONObject;
+
+import com.borjafpa.rollbar.http.HttpRequest;
 
 public class RollbarNotifier {
 

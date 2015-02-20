@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar;
+package com.borjafpa.rollbar.notifications;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -19,10 +19,13 @@ import org.apache.log4j.helpers.LogLog;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.borjafpa.rollbar.util.AppConfiguration;
+import com.borjafpa.rollbar.util.AppConfigurationKey;
+
 public class NotifyBuilder {
 
-    private static final String NOTIFIER_NAME = "rollbar-java";
-    private static final String NOTIFIER_VERSION = "0.0.1";
+    private static final String NOTIFIER_NAME = AppConfiguration.get(AppConfigurationKey.NAME.name());
+    private static final String NOTIFIER_VERSION = AppConfiguration.get(AppConfigurationKey.VERSION.name());
     private static final String NOTIFIER_LANGUAGE = "java";
 
     private final String accessToken;
@@ -38,7 +41,7 @@ public class NotifyBuilder {
         notifierData = getNotifierData();
         serverData = getServerData();
     }
-
+    
     @SuppressWarnings("unchecked")
     JSONObject build(String level, String message, Throwable throwable, Map<String, Object> context) {
 
@@ -152,91 +155,96 @@ public class NotifyBuilder {
         JSONObject requestData = new JSONObject();
 
         String rqParam = RollbarParameter.REQUEST.getKey();
-        HttpServletRequest httpRequest = (context.get(rqParam) != null 
-                && context.get(rqParam) instanceof HttpServletRequest) ? 
-                        (HttpServletRequest) context.get(rqParam) : null;
+        HttpServletRequest httpRequest = 
+                isHttpServletRequest(context, rqParam) ? (HttpServletRequest) context.get(rqParam) : null;
 
-                        // url: full URL where this event occurred
-                        String url = getValue(RollbarParameter.URL.getKey(), context, null);
-                        if (url == null && httpRequest != null) url = httpRequest.getRequestURI();
-                        if (url != null) requestData.put(RollbarParameter.URL.getKey(), url);
+        // url: full URL where this event occurred
+        String url = getValue(RollbarParameter.URL.getKey(), context, null);
+        if (url == null && httpRequest != null) url = httpRequest.getRequestURI();
+        if (url != null) requestData.put(RollbarParameter.URL.getKey(), url);
 
-                        // method: the request method
-                        String method = getValue(RollbarParameter.METHOD.getKey(), context, null);
-                        if (method == null && httpRequest != null) method = httpRequest.getMethod();
-                        if (method != null) requestData.put(RollbarParameter.METHOD.getKey(), method);
+        // method: the request method
+        String method = getValue(RollbarParameter.METHOD.getKey(), context, null);
+        if (method == null && httpRequest != null) method = httpRequest.getMethod();
+        if (method != null) requestData.put(RollbarParameter.METHOD.getKey(), method);
 
-                        // headers
-                        Map<String, String> headers = (Map<String, String>) context.get(RollbarParameter.HEADERS.getKey());
-                        if (headers == null && httpRequest != null) {
-                            headers = new HashMap<String, String>();
+        // headers
+        Map<String, String> headers = 
+                (Map<String, String>) context.get(RollbarParameter.HEADERS.getKey());
+        if (headers == null && httpRequest != null) {
+            headers = new HashMap<String, String>();
 
-                            Enumeration<String> headerNames = httpRequest.getHeaderNames();
-                            while (headerNames.hasMoreElements()) {
-                                String headerName = headerNames.nextElement();
-                                headers.put(headerName, httpRequest.getHeader(headerName));
-                            }
-                        }
-                        if (headers != null) {
-                            JSONObject headersData = new JSONObject();
-                            for (Entry<String, String> entry : headers.entrySet()) {
-                                headersData.put(entry.getKey(), entry.getValue());
-                            }
-                            if (!headersData.isEmpty()) {
-                                requestData.put(RollbarParameter.HEADERS.getKey(), headersData);
-                            }
-                        }
+            Enumeration<String> headerNames = httpRequest.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                headers.put(headerName, httpRequest.getHeader(headerName));
+            }
+        }
+        if (headers != null) {
+            JSONObject headersData = new JSONObject();
+            for (Entry<String, String> entry : headers.entrySet()) {
+                headersData.put(entry.getKey(), entry.getValue());
+            }
+            if (!headersData.isEmpty()) {
+                requestData.put(RollbarParameter.HEADERS.getKey(), headersData);
+            }
+        }
 
-                        // params
-                        Map<String, String> params = (Map<String, String>) context.get(RollbarParameter.PARAMS.getKey());
-                        if (params == null && httpRequest != null) params = httpRequest.getParameterMap();
-                        if (params != null) {
-                            JSONObject paramsData = new JSONObject();
-                            for (Entry<String, String> entry : params.entrySet()) {
-                                paramsData.put(entry.getKey(), entry.getValue());
-                            }
-                            if (!paramsData.isEmpty()) {
-                                String key = method != null ? 
-                                        (method.equalsIgnoreCase("post") ? "POST" : "GET") : "parameters";
-                                        requestData.put(key, paramsData);
-                            }
-                        }
+        // params
+        Map<String, String> params = 
+        (Map<String, String>) context.get(RollbarParameter.PARAMS.getKey());
+        if (params == null && httpRequest != null) params = httpRequest.getParameterMap();
+        if (params != null) {
+            JSONObject paramsData = new JSONObject();
+            for (Entry<String, String> entry : params.entrySet()) {
+                paramsData.put(entry.getKey(), entry.getValue());
+            }
+            if (!paramsData.isEmpty()) {
+                String key = method != null ? 
+                        (method.equalsIgnoreCase("post") ? "POST" : "GET") : "parameters";
+                        requestData.put(key, paramsData);
+            }
+        }
 
-                        // query string
-                        String query = (String) context.get(RollbarParameter.QUERY.getKey());
-                        if (query == null && httpRequest != null) query = httpRequest.getQueryString();
-                        if (query != null) requestData.put(RollbarParameter.QUERY_STRING.getKey(), query);
+        // query string
+        String query = (String) context.get(RollbarParameter.QUERY.getKey());
+        if (query == null && httpRequest != null) query = httpRequest.getQueryString();
+        if (query != null) requestData.put(RollbarParameter.QUERY_STRING.getKey(), query);
 
-                        // user ip
-                        String userIP = (String) context.get(RollbarParameter.USER_IP.getKey());
-                        if (userIP == null && httpRequest != null) userIP = httpRequest.getRemoteAddr();
-                        if (userIP != null) requestData.put(RollbarParameter.USER_IP.getKey(), userIP);
+        // user ip
+        String userIP = (String) context.get(RollbarParameter.USER_IP.getKey());
+        if (userIP == null && httpRequest != null) userIP = httpRequest.getRemoteAddr();
+        if (userIP != null) requestData.put(RollbarParameter.USER_IP.getKey(), userIP);
 
-                        // sessionId
-                        String sessionId = null;
-                        Object sessionObj = context.get(RollbarParameter.SESSION.getKey());
-                        if (sessionObj instanceof HttpSession) {
-                            sessionId = ((HttpSession) sessionObj).getId();
-                        } else if (sessionObj instanceof String) {
-                            sessionId = (String) sessionObj;
-                        }
-                        if (sessionId == null && httpRequest != null) {
-                            HttpSession session = httpRequest.getSession(false);
-                            if (session != null) sessionId = session.getId();
+        // sessionId
+        String sessionId = null;
+        Object sessionObj = context.get(RollbarParameter.SESSION.getKey());
+        if (sessionObj instanceof HttpSession) {
+            sessionId = ((HttpSession) sessionObj).getId();
+        } else if (sessionObj instanceof String) {
+            sessionId = (String) sessionObj;
+        }
+        if (sessionId == null && httpRequest != null) {
+            HttpSession session = httpRequest.getSession(false);
+            if (session != null) sessionId = session.getId();
 
-                        }
-                        if (sessionId != null) requestData.put(RollbarParameter.SESSION.getKey(), sessionId);
+        }
+        if (sessionId != null) requestData.put(RollbarParameter.SESSION.getKey(), sessionId);
 
-                        // protocol
-                        String protocol = (String) context.get(RollbarParameter.PROTOCOL.getKey());
-                        if (protocol == null && httpRequest != null) protocol = httpRequest.getProtocol();
-                        if (protocol != null) requestData.put(RollbarParameter.PROTOCOL.getKey(), protocol);
+        // protocol
+        String protocol = (String) context.get(RollbarParameter.PROTOCOL.getKey());
+        if (protocol == null && httpRequest != null) protocol = httpRequest.getProtocol();
+        if (protocol != null) requestData.put(RollbarParameter.PROTOCOL.getKey(), protocol);
 
-                        // requestId
-                        String requestId = (String) context.get(RollbarParameter.REQUEST_ID.getKey());
-                        if (requestId != null) requestData.put(RollbarParameter.ID.getKey(), requestId);
+        // requestId
+        String requestId = (String) context.get(RollbarParameter.REQUEST_ID.getKey());
+        if (requestId != null) requestData.put(RollbarParameter.ID.getKey(), requestId);
 
-                        return requestData;
+        return requestData;
+    }
+    
+    private boolean isHttpServletRequest(Map<String, Object> context, String rqParam) {
+        return context.get(rqParam) != null && context.get(rqParam) instanceof HttpServletRequest;
     }
 
     @SuppressWarnings("unchecked")
