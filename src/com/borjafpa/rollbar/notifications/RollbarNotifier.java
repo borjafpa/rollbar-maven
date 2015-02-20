@@ -14,6 +14,8 @@ import org.apache.log4j.helpers.LogLog;
 import org.json.simple.JSONObject;
 
 import com.borjafpa.rollbar.http.HttpRequest;
+import com.borjafpa.rollbar.util.AppConfiguration;
+import com.borjafpa.rollbar.util.AppConfigurationKey;
 
 public class RollbarNotifier {
 
@@ -36,6 +38,11 @@ public class RollbarNotifier {
 
     public enum Level {
         DEBUG, INFO, WARNING, ERROR
+    }
+    
+    public static void init(String env) throws UnknownHostException {
+        url = getURL(AppConfiguration.get(AppConfigurationKey.API_URL.name()));
+        builder = new NotifyBuilder(AppConfiguration.get(AppConfigurationKey.API_KEY.name()), env);
     }
 
     public static void init(String urlString, String apiKey, String env) throws UnknownHostException {

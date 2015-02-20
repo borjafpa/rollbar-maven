@@ -29,7 +29,21 @@ public class RollbarNotifierTest {
     private RollbarNotifier.Level level = RollbarNotifier.Level.WARNING;
     
     @Test
-    public void testInit() throws UnknownHostException {
+    public void testInitFirstCase() throws UnknownHostException {
+        /*
+         * - With valid URL 
+         */
+        
+        String environment = "Test";
+        
+        RollbarNotifier.init(environment);
+        
+        assertNotNull("It set the URL to notify", RollbarNotifier.getUrl());
+        assertNotNull("It set the builder to notify", RollbarNotifier.getBuilder());
+    }
+    
+    @Test
+    public void testInitSecondCase() throws UnknownHostException {
         /*
          * - With valid URL 
          */
