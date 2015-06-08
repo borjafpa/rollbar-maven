@@ -127,8 +127,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
-			<artifactId>powermock-mockito-full</artifactId>
-			<version>1.5</version>
+			<artifactId>powermock-mockito-release-full</artifactId>
+			<version>1.5.3</version>
 		</dependency>
 	</dependencies>
 </project>
