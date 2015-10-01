@@ -3,7 +3,7 @@ Rollbar Maven
 
 This is a mavenized notifier library to integrate Java apps with [Rollbar](https://rollbar.com/), the error aggregation service. You will need a Rollbar account: sign up for an account [here](https://rollbar.com/signup/).
 
-This is a fork of [rollbar-java] (https://github.com/borjafpa/rollbar-java), and the only thing added is the mvn-repo branch with deploy hook, and following comment.
+This is a fork of [rollbar-maven] (https://github.com/borjafpa/rollbar-maven), and the only thing added is the mvn-repo branch with deploy hook, and following comment.
 
 Maven config
 ---------------
