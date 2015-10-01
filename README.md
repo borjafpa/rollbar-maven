@@ -61,7 +61,7 @@ Example:
 
 or in XML format:
 
-	<appender name="ROLLBAR" class="com.mhlopko.rollbar.java.RollbarAppender">
+	<appender name="ROLLBAR" class="com.mhlopko.rollbar.notifications.RollbarAppender">
 	    <param name="enabled" value="false"/>
 	    <param name="api_key" value="YOUR_ROLLBAR_API_KEY"/>
 	    <param name="env" value="test"/>
