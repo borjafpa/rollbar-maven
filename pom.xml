@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.borjafpa.rollbar</groupId>
+    <groupId>com.mhlopko.rollbar</groupId>
     <artifactId>RollbarMaven</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
@@ -14,7 +14,7 @@
     </properties>
 
     <name>RollbarMaven</name>
-    <url>https://github.com/borjafpa/rollbar-maven</url>
+    <url>https://github.com/mhlopko/rollbar-maven</url>
 
     <distributionManagement>
         <repository>
@@ -43,7 +43,7 @@
                     <branch>refs/heads/mvn-repo</branch>
                     <includes><include>**/*</include></includes>
                     <repositoryName>rollbar-maven</repositoryName>
-                    <repositoryOwner>borjafpa</repositoryOwner>
+                    <repositoryOwner>mhlopko</repositoryOwner>
                 </configuration>
                 <executions>
                     <execution>
