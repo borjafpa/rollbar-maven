@@ -24,8 +24,8 @@ import com.mhlopko.rollbar.util.AppConfigurationKey;
 
 public class NotifyBuilder {
 
-    private static final String NOTIFIER_NAME = AppConfiguration.get(AppConfigurationKey.NAME.name());
-    private static final String NOTIFIER_VERSION = AppConfiguration.get(AppConfigurationKey.VERSION.name());
+    private static final String NOTIFIER_NAME = "Rollbar-maven";
+    private static final String NOTIFIER_VERSION = "0.1";
     private static final String NOTIFIER_LANGUAGE = "java";
 
     private final String accessToken;

@@ -31,7 +31,7 @@ public class RollbarAppender extends AppenderSkeleton {
 
     private String apiKey;
     private String env;
-    private String url = AppConfiguration.get(AppConfigurationKey.API_URL.name());
+    private String url = "https://api.rollbar.com/api/1/item/";
 
     @Override
     protected void append(final LoggingEvent event) {
