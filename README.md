@@ -5,6 +5,32 @@ This is a mavenized notifier library to integrate Java apps with [Rollbar](https
 
 This is a fork of [rollbar-java] (https://github.com/rafael-munoz/rollbar-java) by Rafael Munoz
 
+Maven config
+---------------
+
+Add this to your pom.xml to add this github repository as a maven
+repository.
+
+    <repositories>
+        <repository>
+            <id>rollbar-maven-mvn-repo</id>
+            <url>https://raw.github.com/borjafpa/rollbar-maven/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+Then you can add the dependency:
+
+  <dependency>
+      <groupId>com.borjafpa.rollbar</groupId>
+      <artifactId>RollbarMaven</artifactId>
+      <version>0.1.0</version>
+  </dependency>
+
+
 Setup
 -------------
 
@@ -21,7 +47,7 @@ Example:
 	log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
 	log4j.appender.stdout.layout.ConversionPattern=[%d,%p] [%c{1}.%M:%L] %m%n
 
-	log4j.appender.rollbar=airbrake.AirbrakeAppender	
+	log4j.appender.rollbar=airbrake.AirbrakeAppender
 	log4j.appender.rollbar.api_key=YOUR_ROLLBAR_API_KEY
 	#log4j.appender.rollbar.env=development
 	#log4j.appender.rollbar.env=production
@@ -37,7 +63,7 @@ or in XML format:
 
 	<appender name="ROLLBAR" class="com.muantech.rollbar.java.RollbarAppender">
 	    <param name="enabled" value="false"/>
-	    <param name="api_key" value="YOUR_ROLLBAR_API_KEY"/> 
+	    <param name="api_key" value="YOUR_ROLLBAR_API_KEY"/>
 	    <param name="env" value="test"/>
 		<param name="onlyThrowable" value="true" />
 		<param name="notifyLevel" value="error" />
@@ -52,7 +78,7 @@ or in XML format:
 	<root>
 		<appender-ref ref="ROLLBAR"/>
 	</root>
-	
+
 Appender parameters:
 * api_key: The rollbar API key. Mandatory.
 * env: Environment. i.e. production, test, development. Mandatory.
@@ -96,7 +122,7 @@ The RollbarNotifier object has several static methods that can be used to notify
 
 
 The parameters are:
-* Message: String to notify 
+* Message: String to notify
 * Throwable: Throwable to notify
 * Context: Notification context. See Context section.
 * Level: Notification level (don't confuse with the Log4j level). By default a throwable notification will be notified with a "error" level and a message notification as a "info" level.
@@ -104,7 +130,7 @@ The parameters are:
 Context
 ------------------------------
 
-The rollbar notifier use a context to add additional information to the notification and help to solve any detected problem. The notifier try to be smart with the context values: 
+The rollbar notifier use a context to add additional information to the notification and help to solve any detected problem. The notifier try to be smart with the context values:
 
 * The rollbar notifier would add any known context value in the correct place in the notification message (To understand the notification message and the possible values see the [rollbar API item] (https://rollbar.com/docs/api_items/).)
 * All the String context values, known and unknown, would be also add as custom parameters
@@ -135,6 +161,6 @@ Most of these values only make sense for J2EE applications.
 Log4j Context
 ------------------------------
 
-The log4j appender would use the MDC log4j as the notification context. 
+The log4j appender would use the MDC log4j as the notification context.
 
 A very useful pattern is to use a J2EE filter to add helpful parameters to the MDC log4j context. See for instance the [filter example] (https://github.com/rafael-munoz/rollbar-java/blob/master/src/com/muantech/rollbar/java/RollbarFilter.java)
