@@ -24,11 +24,11 @@ repository.
 
 Then you can add the dependency:
 
-  <dependency>
-      <groupId>com.mhlopko.rollbar</groupId>
-      <artifactId>RollbarMaven</artifactId>
-      <version>0.1.0</version>
-  </dependency>
+    <dependency>
+        <groupId>com.mhlopko.rollbar</groupId>
+        <artifactId>RollbarMaven</artifactId>
+        <version>0.1.0</version>
+    </dependency>
 
 
 Setup
