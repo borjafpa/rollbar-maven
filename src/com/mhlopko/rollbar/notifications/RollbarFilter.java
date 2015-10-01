@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar.notifications;
+package com.mhlopko.rollbar.notifications;
 
 import java.io.IOException;
 

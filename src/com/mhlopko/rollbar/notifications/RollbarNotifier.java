@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar.notifications;
+package com.mhlopko.rollbar.notifications;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,12 +10,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import com.mhlopko.rollbar.http.HttpRequest;
+import com.mhlopko.rollbar.util.AppConfiguration;
 import org.apache.log4j.helpers.LogLog;
 import org.json.simple.JSONObject;
 
-import com.borjafpa.rollbar.http.HttpRequest;
-import com.borjafpa.rollbar.util.AppConfiguration;
-import com.borjafpa.rollbar.util.AppConfigurationKey;
+import com.mhlopko.rollbar.http.HttpRequest;
+import com.mhlopko.rollbar.util.AppConfiguration;
+import com.mhlopko.rollbar.util.AppConfigurationKey;
 
 public class RollbarNotifier {
 
@@ -25,7 +27,7 @@ public class RollbarNotifier {
     private static URL url;
 
     private static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(
-            2, 
+            2,
             new ThreadFactory() {
                 public Thread newThread(Runnable runnable) {
                     Thread thread = Executors.defaultThreadFactory().newThread(runnable);
@@ -39,7 +41,7 @@ public class RollbarNotifier {
     public enum Level {
         DEBUG, INFO, WARNING, ERROR
     }
-    
+
     public static void init(String env) throws UnknownHostException {
         url = getURL(AppConfiguration.get(AppConfigurationKey.API_URL.name()));
         builder = new NotifyBuilder(AppConfiguration.get(AppConfigurationKey.API_KEY.name()), env);
@@ -89,7 +91,7 @@ public class RollbarNotifier {
     public static void notifyInLevel(Level level, Throwable throwable, Map<String, Object> context) {
         notify(level, null, throwable, context);
     }
-    
+
     public static NotifyBuilder getBuilder() {
         return builder;
     }
@@ -98,7 +100,7 @@ public class RollbarNotifier {
         return url;
     }
 
-    private static void notify(final Level level, final String message, final Throwable throwable, 
+    private static void notify(final Level level, final String message, final Throwable throwable,
             final Map<String, Object> context) {
 
         EXECUTOR.execute(new Runnable() {

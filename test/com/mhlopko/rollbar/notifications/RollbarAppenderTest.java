@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar.notifications;
+package com.mhlopko.rollbar.notifications;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,35 +22,35 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.borjafpa.rollbar.notifications.RollbarAppender;
-import com.borjafpa.rollbar.notifications.RollbarNotifier;
+import com.mhlopko.rollbar.notifications.RollbarAppender;
+import com.mhlopko.rollbar.notifications.RollbarNotifier;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RollbarNotifier.class, MDC.class})
 public class RollbarAppenderTest {
-    
+
     @Test
     public void testAppendLoggingEventFirstCase() throws Exception {
         /*
          * - Not enabled
          */
         mockNotifier();
-        
+
         String fqnOfCategoryClass = RollbarAppenderTest.class.getName();
         Category logger = Logger.getLogger(RollbarAppenderTest.class);
         Priority level = Priority.DEBUG;
         String message = "message";
         Throwable throwable = new Exception();
-        
+
         LoggingEvent event = new LoggingEvent(fqnOfCategoryClass, logger, level, message, throwable);
-        
+
         RollbarAppender appender = new RollbarAppender();
         appender.setEnabled(false);
         appender.append(event);
-        
+
         checkNotifier(0, 0);
     }
-    
+
     @Test
     public void testAppendLoggingEventSecondCase() throws Exception {
         /*
@@ -58,23 +58,23 @@ public class RollbarAppenderTest {
          * - Does not have to notify
          */
         mockNotifier();
-        
+
         String fqnOfCategoryClass = RollbarAppenderTest.class.getName();
         Category logger = Logger.getLogger(RollbarAppenderTest.class);
         Priority level = Priority.DEBUG;
         String message = "message";
         Throwable throwable = new Exception();
-        
+
         LoggingEvent event = new LoggingEvent(fqnOfCategoryClass, logger, level, message, throwable);
-        
+
         RollbarAppender appender = new RollbarAppender();
         appender.setLayout(new SimpleLayout());
         appender.setEnabled(true);
         appender.append(event);
-        
+
         checkNotifier(0, 0);
     }
-    
+
     @Test
     public void testAppendLoggingEventThirdCase() throws Exception {
         /*
@@ -83,24 +83,24 @@ public class RollbarAppenderTest {
          * - Only throwable and is not a throwable
          */
         mockNotifier();
-        
+
         String fqnOfCategoryClass = RollbarAppenderTest.class.getName();
         Category logger = Logger.getLogger(RollbarAppenderTest.class);
         Priority level = Priority.ERROR;
         String message = "message";
         Throwable throwable = null;
-        
+
         LoggingEvent event = new LoggingEvent(fqnOfCategoryClass, logger, level, message, throwable);
-        
+
         RollbarAppender appender = new RollbarAppender();
         appender.setLayout(new SimpleLayout());
         appender.setEnabled(true);
         appender.setOnlyThrowable(true);
         appender.append(event);
-        
+
         checkNotifier(0, 0);
     }
-    
+
     @Test
     public void testAppendLoggingEventFourthCase() throws Exception {
         /*
@@ -111,24 +111,24 @@ public class RollbarAppenderTest {
          */
         mockNotifier();
         mockMDC();
-        
+
         String fqnOfCategoryClass = RollbarAppenderTest.class.getName();
         Category logger = Logger.getLogger(RollbarAppenderTest.class);
         Priority level = Priority.ERROR;
         String message = "message";
         Throwable throwable = new Exception();
-        
+
         LoggingEvent event = new LoggingEvent(fqnOfCategoryClass, logger, level, message, throwable);
-        
+
         RollbarAppender appender = new RollbarAppender();
         appender.setLayout(new SimpleLayout());
         appender.setEnabled(true);
         appender.setOnlyThrowable(false);
         appender.append(event);
-        
+
         checkNotifier(0, 1);
     }
-    
+
     @Test
     public void testAppendLoggingEventFifthCase() throws Exception {
         /*
@@ -139,76 +139,76 @@ public class RollbarAppenderTest {
          */
         mockNotifier();
         mockMDC();
-        
+
         String fqnOfCategoryClass = RollbarAppenderTest.class.getName();
         Category logger = Logger.getLogger(RollbarAppenderTest.class);
         Priority level = Priority.ERROR;
         String message = "message";
         Throwable throwable = null;
-        
+
         LoggingEvent event = new LoggingEvent(fqnOfCategoryClass, logger, level, message, throwable);
-        
+
         RollbarAppender appender = new RollbarAppender();
         appender.setLayout(new SimpleLayout());
         appender.setEnabled(true);
         appender.setOnlyThrowable(false);
         appender.append(event);
-        
+
         checkNotifier(1, 0);
     }
 
     @Test
     public void testHasToNotifyFirstCase() {
         /*
-         * - Has to notify 
+         * - Has to notify
          */
-        
+
         RollbarAppender appender = new RollbarAppender();
         appender.setLevel(Level.DEBUG.toString());
-        
+
         assertTrue("It returns that it has to notify", appender.hasToNotify(Priority.WARN));
     }
-    
+
     @Test
     public void testHasToNotifySecondCase() {
         /*
-         * - Does not have to notify 
+         * - Does not have to notify
          */
-        
+
         RollbarAppender appender = new RollbarAppender();
         appender.setLevel(Level.ERROR.toString());
-        
+
         assertFalse("It returns that it has not to notify", appender.hasToNotify(Priority.WARN));
     }
 
     @Test
     public void testRequiresLayout() {
         RollbarAppender appender = new RollbarAppender();
-        
+
         assertTrue("It returns that requires layout", appender.requiresLayout());
     }
-    
+
     private void mockNotifier() throws Exception {
         PowerMockito.mockStatic(RollbarNotifier.class);
         PowerMockito.doNothing().when(RollbarNotifier.class, "notify", anyString(), anyMap());
         PowerMockito.doNothing().when(RollbarNotifier.class, "notifyError", anyString(), anyObject(), anyMap());
     }
-    
+
     private void mockMDC() throws Exception {
         Hashtable<String, Object> context = new Hashtable<String, Object>();
-        
+
         PowerMockito.mockStatic(MDC.class);
         PowerMockito.when(MDC.class, "getContext").thenReturn(context);
     }
-    
+
     private void checkNotifier(int timesNotify, int timesNotifyError) throws Exception {
-        
+
         PowerMockito.verifyStatic(Mockito.times(timesNotify));
         RollbarNotifier.notify(anyString(), anyMap());
-        
+
         PowerMockito.verifyStatic(Mockito.times(timesNotifyError));
         RollbarNotifier.notifyError(anyString(), (Throwable)anyObject(), anyMap());
-        
+
     }
 
 }

@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar.notifications;
+package com.mhlopko.rollbar.notifications;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -19,8 +19,8 @@ import org.apache.log4j.helpers.LogLog;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.borjafpa.rollbar.util.AppConfiguration;
-import com.borjafpa.rollbar.util.AppConfigurationKey;
+import com.mhlopko.rollbar.util.AppConfiguration;
+import com.mhlopko.rollbar.util.AppConfigurationKey;
 
 public class NotifyBuilder {
 
@@ -41,7 +41,7 @@ public class NotifyBuilder {
         notifierData = getNotifierData();
         serverData = getServerData();
     }
-    
+
     @SuppressWarnings("unchecked")
     JSONObject build(String level, String message, Throwable throwable, Map<String, Object> context) {
 
@@ -57,11 +57,11 @@ public class NotifyBuilder {
         data.put(RollbarParameter.ENVIRONMENT.getKey(), this.environment);
         data.put(RollbarParameter.LEVEL.getKey(), level);
         data.put(
-                RollbarParameter.PLATFORM.getKey(), 
+                RollbarParameter.PLATFORM.getKey(),
                 getValue(RollbarParameter.PLATFORM.getKey(), context, NOTIFIER_LANGUAGE)
                 );
         data.put(
-                RollbarParameter.FRAMEWORK.getKey(), 
+                RollbarParameter.FRAMEWORK.getKey(),
                 getValue(RollbarParameter.FRAMEWORK.getKey(), context, NOTIFIER_LANGUAGE)
                 );
         data.put(RollbarParameter.LANGUAGE.getKey(), NOTIFIER_LANGUAGE);
@@ -73,7 +73,7 @@ public class NotifyBuilder {
         // request data
         if (context != null) {
             JSONObject requestData = getRequestData(context);
-            if (requestData != null && !requestData.isEmpty()) { 
+            if (requestData != null && !requestData.isEmpty()) {
                 data.put(RollbarParameter.REQUEST.getKey(), requestData);
             }
         }
@@ -155,7 +155,7 @@ public class NotifyBuilder {
         JSONObject requestData = new JSONObject();
 
         String rqParam = RollbarParameter.REQUEST.getKey();
-        HttpServletRequest httpRequest = 
+        HttpServletRequest httpRequest =
                 isHttpServletRequest(context, rqParam) ? (HttpServletRequest) context.get(rqParam) : null;
 
         // url: full URL where this event occurred
@@ -169,7 +169,7 @@ public class NotifyBuilder {
         if (method != null) requestData.put(RollbarParameter.METHOD.getKey(), method);
 
         // headers
-        Map<String, String> headers = 
+        Map<String, String> headers =
                 (Map<String, String>) context.get(RollbarParameter.HEADERS.getKey());
         if (headers == null && httpRequest != null) {
             headers = new HashMap<String, String>();
@@ -191,7 +191,7 @@ public class NotifyBuilder {
         }
 
         // params
-        Map<String, String> params = 
+        Map<String, String> params =
         (Map<String, String>) context.get(RollbarParameter.PARAMS.getKey());
         if (params == null && httpRequest != null) params = httpRequest.getParameterMap();
         if (params != null) {
@@ -200,7 +200,7 @@ public class NotifyBuilder {
                 paramsData.put(entry.getKey(), entry.getValue());
             }
             if (!paramsData.isEmpty()) {
-                String key = method != null ? 
+                String key = method != null ?
                         (method.equalsIgnoreCase("post") ? "POST" : "GET") : "parameters";
                         requestData.put(key, paramsData);
             }
@@ -242,7 +242,7 @@ public class NotifyBuilder {
 
         return requestData;
     }
-    
+
     private boolean isHttpServletRequest(Map<String, Object> context, String rqParam) {
         return context.get(rqParam) != null && context.get(rqParam) instanceof HttpServletRequest;
     }
@@ -266,13 +266,13 @@ public class NotifyBuilder {
                         if (valueSession instanceof String) {
                             String str = (String) valueSession;
                             customData.put(
-                                    RollbarParameter.CUSTOM_DATA_SESSION.getKey() + nameSession, 
+                                    RollbarParameter.CUSTOM_DATA_SESSION.getKey() + nameSession,
                                     str
                                     );
                         } else if (valueSession instanceof String[]) {
                             String[] array = (String[]) valueSession;
                             customData.put(
-                                    RollbarParameter.CUSTOM_DATA_SESSION.getKey() + nameSession, 
+                                    RollbarParameter.CUSTOM_DATA_SESSION.getKey() + nameSession,
                                     Arrays.asList(array)
                                     );
                         }
@@ -289,13 +289,13 @@ public class NotifyBuilder {
                         if (valueRequest instanceof String) {
                             String str = (String) valueRequest;
                             customData.put(
-                                    RollbarParameter.CUSTOM_DATA_ATTRIBUTE.getKey() + nameRequest, 
+                                    RollbarParameter.CUSTOM_DATA_ATTRIBUTE.getKey() + nameRequest,
                                     str
                                     );
                         } else if (valueRequest instanceof String[]) {
                             String[] array = (String[]) valueRequest;
                             customData.put(
-                                    RollbarParameter.CUSTOM_DATA_ATTRIBUTE.getKey() + nameRequest, 
+                                    RollbarParameter.CUSTOM_DATA_ATTRIBUTE.getKey() + nameRequest,
                                     Arrays.asList(array)
                                     );
                         }
@@ -331,9 +331,9 @@ public class NotifyBuilder {
 
         String browser = getValue(RollbarParameter.USER_AGENT.getKey(), context, null);
         if (browser == null) {
-            HttpServletRequest request = 
+            HttpServletRequest request =
                     (HttpServletRequest) context.get(RollbarParameter.REQUEST.getKey());
-            if (request != null) { 
+            if (request != null) {
                 browser = request.getHeader(RollbarParameter.USER_AGENT_CAMELCASE.getKey());
             }
         }

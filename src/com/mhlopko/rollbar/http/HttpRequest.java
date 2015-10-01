@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar.http;
+package com.mhlopko.rollbar.http;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,7 +20,7 @@ public class HttpRequest {
     private static final int CONNECTION_TIMEOUT = 5000;
 
     private URL url;
-    private String body; 
+    private String body;
     private int attemptNumber;
 
     public HttpRequest(URL url, String body) {

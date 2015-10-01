@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar.util;
+package com.mhlopko.rollbar.util;
 
 public enum AppConfigurationKey {
     API_KEY,

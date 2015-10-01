@@ -1,4 +1,4 @@
-package com.borjafpa.rollbar.notifications;
+package com.mhlopko.rollbar.notifications;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
-import com.borjafpa.rollbar.util.AppConfiguration;
-import com.borjafpa.rollbar.util.AppConfigurationKey;
+import com.mhlopko.rollbar.util.AppConfiguration;
+import com.mhlopko.rollbar.util.AppConfigurationKey;
 
 public class RollbarAppender extends AppenderSkeleton {
 
@@ -58,7 +58,7 @@ public class RollbarAppender extends AppenderSkeleton {
 
         } catch (Exception e) {
             LogLog.error(
-                    "Error sending error notification! error= " + 
+                    "Error sending error notification! error= " +
                             e.getClass().getName() + " with message=" + e.getMessage()
                     );
         }
